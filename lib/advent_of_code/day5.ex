@@ -23,28 +23,28 @@ defmodule AdventOfCode.Day5 do
 
   # Return early if the child is not nice
   defp check_vowels({ false, _ } = state), do: state
-  defp check_vowels({ true, child }), do: { check_vowels(0, String.to_char_list(child)), child }
+  defp check_vowels({ true, child }), do: { check_vowels(0, child), child }
 
   defp check_vowels(3, _), do: true
-  defp check_vowels(count, ''), do: count > 2
+  defp check_vowels(count, ""), do: count > 2
 
   defp check_vowels(count, child) do
     case child do
-      [?a | rest] -> check_vowels(count + 1, rest)
-      [?e | rest] -> check_vowels(count + 1, rest)
-      [?i | rest] -> check_vowels(count + 1, rest)
-      [?o | rest] -> check_vowels(count + 1, rest)
-      [?u | rest] -> check_vowels(count + 1, rest)
-      [_  | rest] -> check_vowels(count, rest)
+      "a" <> rest -> check_vowels(count + 1, rest)
+      "e" <> rest -> check_vowels(count + 1, rest)
+      "i" <> rest -> check_vowels(count + 1, rest)
+      "o" <> rest -> check_vowels(count + 1, rest)
+      "u" <> rest -> check_vowels(count + 1, rest)
+      <<_ :: binary-size(1), rest :: binary>> -> check_vowels(count, rest)
     end
   end
 
 
   # Return early if the child is not nice
   defp check_duplicates({ false, _ } = state), do: state
-  defp check_duplicates({ true, child }), do: { check_duplicates(false, nil, String.to_char_list(child)), child }
+  defp check_duplicates({ true, child }), do: { check_duplicates(false, nil, child), child }
 
   defp check_duplicates(true, _, _), do: true
-  defp check_duplicates(result, _, ''), do: result
-  defp check_duplicates(_, prev, [current | rest]), do: check_duplicates(prev == current, current, rest)
+  defp check_duplicates(result, _, ""), do: result
+  defp check_duplicates(_, prev, <<current :: binary-size(1), rest :: binary>>), do: check_duplicates(prev == current, current, rest)
 end
