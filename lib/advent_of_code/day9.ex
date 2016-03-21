@@ -1,41 +1,41 @@
 defmodule AdventOfCode.Day9 do
   def parse(input) do
-    input
-    |> String.split("\n", trim: true)
-    |> Enum.map(&parse_line/1)
-    |> Enum.reduce(%{}, &normalize/2)
-    |> Enum.map(&sort/1)
-    |> Enum.reduce(%{total: 0, visited: []}, &shortest_distance/2)
-    |> Map.get(:total)
+    dests = parse_dests(input)
+    cities = parse_cities(dests)
+
+    distance(dests, Enum.count(cities) - 1, 0, cities)
   end
 
-  defp shortest_distance({ city, dists }, acc) do
-    acc
-    |> Map.update!(:total, &(&1 + distance_for(dists, acc.visited)))
-    |> Map.update!(:visited, &([city | &1]))
-  end
+  defp distance(_, 0, sum, _), do: sum
 
-  defp distance_for([], _), do: 0
+  defp distance([{ dist, from, to } | rest], iteration, sum, visited) do
+    if visited[from] < 2 && visited[to] < 2 do
+      visited = visited
+        |> Map.update(from, 1, &(&1 + 1))
+        |> Map.update(to, 1, &(&1 + 1))
 
-  defp distance_for([{ dist, city } | tail], visited) do
-    case Enum.member?(visited, city) do
-      true -> distance_for(tail, visited)
-      false -> dist
+      distance(rest, iteration - 1, sum + dist, visited)
+    else
+      distance(rest, iteration, sum, visited)
     end
   end
 
+  def parse_dests(input) do
+    input
+    |> String.split("\n", trim: true)
+    |> Enum.map(&parse_line/1)
+    |> Enum.sort(&(elem(&1, 0) < elem(&2, 0)))
+  end
+
   defp parse_line(line) do
-    Regex.named_captures(~r/(?<from>\w+) to (?<to>\w+) = (?<dist>\d+)/, line)
-    |> Map.update!("dist", &String.to_integer/1)
+    [from, "to", to, "=", dist] = String.split(line, " ")
+    { String.to_integer(dist), from, to }
   end
 
-  defp normalize(line, map) do
-    map
-    |> Map.update(line["from"], [{ line["dist"], line["to"] }], &([{ line["dist"], line["to"] } | &1]))
-    |> Map.update(line["to"], [{ line["dist"], line["from"] }], &([{ line["dist"], line["from"] } | &1]))
-  end
-
-  defp sort({ city, dists }) do
-    { city, Enum.sort(dists, fn ({ left, _ }, { right, _ }) -> left < right end) }
+  defp parse_cities(dests) do
+    dests
+    |> Enum.reduce([], &([elem(&1, 1), elem(&1, 2) | &2]))
+    |> Enum.uniq
+    |> Enum.reduce(%{}, &(Map.put(&2, &1, 0)))
   end
 end
