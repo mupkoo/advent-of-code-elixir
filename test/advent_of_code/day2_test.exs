@@ -8,7 +8,7 @@ defmodule AdventOfCodeDay2Test do
     assert Day2.parse("1x1x10") == 43
   end
 
-  test "it works with multiline input" do
+  test "it works with multi-line input" do
     assert Day2.parse("""
       2x3x4
       1x1x10

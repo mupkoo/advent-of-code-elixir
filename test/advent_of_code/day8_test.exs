@@ -8,7 +8,7 @@ defmodule AdventOfCodeDay8Test do
   "as\x27ss"
   "\"\\fdktlp"}
 
-  test "#parse line returns the total difference betwen code and chars" do
+  test "#parse line returns the total difference between code and chars" do
     assert Day8.parse(@input) == 16
   end
 

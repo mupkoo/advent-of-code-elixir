@@ -29,7 +29,7 @@ defmodule AdventOfCodeDay6Test do
     assert Day6.parse_line("  turn on 576,900 through 943,934  ") == {"on", {576, 900}, {943, 934}}
   end
 
-  test "#execute turns on all the lights according the cordinates" do
+  test "#execute turns on all the lights according the coordinates" do
     assert Day6.execute({"on", {1, 1}, {2, 2}}, @initial_grid) == %{
       {0, 0} => true,  {0, 1} => false, {0, 2} => false,
       {1, 0} => false, {1, 1} => true,  {1, 2} => true,
@@ -37,7 +37,7 @@ defmodule AdventOfCodeDay6Test do
     }
   end
 
-  test "#execute turns off all the lights according the cordinates" do
+  test "#execute turns off all the lights according the coordinates" do
     assert Day6.execute({"off", {1, 1}, {2, 2}}, @initial_grid) == %{
       {0, 0} => true,  {0, 1} => false, {0, 2} => false,
       {1, 0} => false, {1, 1} => false, {1, 2} => false,
