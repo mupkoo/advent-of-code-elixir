@@ -11,4 +11,5 @@ defmodule Mix.Tasks.AdventOfCode.Day do
   def run(["six", input]),   do: IO.puts AdventOfCode.Day6.parse(input)
   def run(["seven", input]), do: IO.puts AdventOfCode.Day7.parse(input)
   def run(["eight", input]), do: IO.puts AdventOfCode.Day8.parse(input)
+  def run(["nine", input]),  do: IO.puts AdventOfCode.Day9.parse(input)
 end
