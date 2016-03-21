@@ -1,20 +1,14 @@
-# AdventOfCode
+# Advent of Code example solutions in Elixir
 
-**TODO: Add description**
+My solutions to [Advent of Code](http://adventofcode.com/), written in Elixir.
 
-## Installation
+## Couple of words about the project
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
+This is a mix project, so if you clone the repo, you can run the tests via `mix test`.
 
-  1. Add advent_of_code to your list of dependencies in `mix.exs`:
+To find a solution to a quiz, run the `advent_of_code.day` task like so:
 
-        def deps do
-          [{:advent_of_code, "~> 0.0.1"}]
-        end
-
-  2. Ensure advent_of_code is started before your application:
-
-        def application do
-          [applications: [:advent_of_code]]
-        end
-
+```shell
+# mix advent_of_code.day <day-name> "<input>"
+mix advent_of_code.day ten "1113222113"
+```
