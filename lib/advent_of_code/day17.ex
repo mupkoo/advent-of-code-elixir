@@ -2,67 +2,19 @@ defmodule AdventOfCode.Day17 do
   def parse(input, liters \\ 150) do
     containers = normalize(input)
 
-    containers
-    |> indexes
-    |> permutations
-    |> Stream.map(fn (indexes) -> sum(indexes, containers, liters) end)
-    |> Stream.filter(fn ({sum, _}) -> sum == liters end)
-    |> Stream.map(fn ({sum, indexes}) -> {sum, Enum.sort(indexes)} end)
-    |> Stream.uniq
-    |> Enum.to_list
-    |> length
+    1..length(containers)
+    |> Enum.reduce({0, containers, liters}, &reducer/2)
+    |> elem(0)
   end
 
-  def sum(indexes, containers, liters) do
-    Enum.reduce(indexes, {0, []}, fn (index, {sum, inner_indexes}) ->
-      case sum < liters do
-        true -> {sum + Enum.at(containers, index), [index | inner_indexes]}
-        false -> {sum, inner_indexes}
-      end
-    end)
-  end
+  defp reducer(n, {sum, containers, liters}) do
+    inner_sum = containers
+      |> combinations(n)
+      |> Enum.reduce(0, fn (list, sum) ->
+        if Enum.sum(list) == liters, do: sum + 1, else: sum
+      end)
 
-  def indexes(list) do
-    count = length(list) - 1
-    0..count |> Enum.to_list
-  end
-
-  def permutations(list) do
-    list
-    |> Enum.sort
-    |> Stream.unfold(fn
-      [] -> nil
-      p ->
-        {p, next_permutation(p)}
-    end)
-  end
-
-  defp next_permutation(permutation) do
-    if permutation == permutation |> Enum.sort |> Enum.reverse do
-      []
-    else
-      permutation
-      |> split
-      |> heal
-    end
-  end
-
-  defp split(permutation) do
-    permutation
-    |> Enum.reverse
-    |> Enum.reduce({0, false, [], []}, fn(x, {prev, split, first, last}) ->
-      case split do
-        false -> {x, x < prev, first, [x|last]}
-        true -> {x, true, [x|first], last}
-      end
-    end)
-    |> fn({_, _,first, last}) -> {first, last} end.()
-  end
-
-  defp heal({first, [h|_] = last}) do
-    next = last |> Enum.filter(&(&1 > h)) |> Enum.min
-    rest = last -- [next] |> Enum.sort
-    first ++ [next] ++ rest
+    {sum + inner_sum, containers, liters}
   end
 
   defp normalize(input) do
@@ -75,5 +27,11 @@ defmodule AdventOfCode.Day17 do
     line
     |> String.strip
     |> String.to_integer
+  end
+
+  def combinations(_, 0), do: [[]]
+  def combinations([], _), do: []
+  def combinations([x|xs], n) do
+    (for y <- combinations(xs, n - 1), do: [x|y]) ++ combinations(xs, n)
   end
 end
